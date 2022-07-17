@@ -924,7 +924,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                                                               199,
                                                                               199,
                                                                               199),
-                                                                        ))),
+                                                                        )),
+                                                                border: OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10))),
                                                       ),
                                                     ),
                                                     const SizedBox(
@@ -945,7 +949,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                                         autofocus: false,
                                                         textInputAction:
                                                             TextInputAction
-                                                                .next,
+                                                                .done,
                                                         decoration:
                                                             InputDecoration(
                                                                 enabledBorder:
