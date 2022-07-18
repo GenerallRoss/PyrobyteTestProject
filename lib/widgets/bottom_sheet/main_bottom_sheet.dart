@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:test_project/classes/price.dart';
-import 'package:test_project/utils/price_utils.dart';
 import 'package:test_project/values/constants.dart';
 import 'package:test_project/values/machine_info.dart';
 import 'package:test_project/widgets/bottom_sheet/cash_input.dart';
@@ -10,8 +8,6 @@ import 'package:test_project/widgets/bottom_sheet/use_or_dont.dart';
 
 class MyBottomSheet {
   bool _isChecked = false;
-  bool _isUsed = true;
-  List<Price> price = PriceUtils.getPrice();
   Future showMyBottomSheet(BuildContext context) {
     return showModalBottomSheet(
         context: context,

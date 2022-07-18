@@ -11,36 +11,84 @@ class LoadingAnimation extends StatefulWidget {
   State<LoadingAnimation> createState() => _LoadingAnimationState();
 }
 
-class _LoadingAnimationState extends State<LoadingAnimation> {
+class _LoadingAnimationState extends State<LoadingAnimation>
+    with SingleTickerProviderStateMixin {
+  late Animation _animation;
+  late AnimationController _animationController;
+  int loadingValue = 50;
+  bool _startAnimation = false;
+
+  @override
+  void initState() {
+    _animationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 1500));
+    _animation = IntTween(begin: 0, end: loadingValue).animate(CurvedAnimation(
+        parent: _animationController, curve: Curves.easeInOutCirc));
+    _animationController.forward();
+    startAnim();
+    super.initState();
+  }
+
+  Future startAnim() async {
+    await Future.delayed(const Duration(seconds: 1));
+    setState(() {
+      _startAnimation = !_startAnimation;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-          gradient: const LinearGradient(
-              //stops: [_loadingValue / 100, _loadingValue / 100],
-              begin: Alignment.bottomCenter,
-              end: Alignment.topCenter,
-              tileMode: TileMode.mirror,
-              colors: [Color.fromARGB(255, 134, 176, 248), Colors.white]),
-          borderRadius: BorderRadius.circular(5)),
-      width: widget.constraints.maxWidth * 0.45,
-      height: widget.constraints.maxHeight,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          Text(
-            '50 %',
-            style: TextStyle(
-                fontSize: 35, fontWeight: FontWeight.bold, color: textColor),
+    double width = widget.constraints.maxWidth * 0.45;
+    double height = widget.constraints.maxHeight;
+    return Stack(
+      children: [
+        AnimatedPositioned(
+            curve: Curves.easeInOutCirc,
+            width: width,
+            height: height,
+            top: _startAnimation
+                ? height - (height * 0.01 * loadingValue)
+                : height,
+            duration: const Duration(milliseconds: 1500),
+            child: Container(
+              decoration: BoxDecoration(
+                color: buttonColor,
+                borderRadius: BorderRadius.circular(5),
+              ),
+              width: width,
+              height: height,
+            )),
+        Container(
+          padding: const EdgeInsets.all(15),
+          decoration: BoxDecoration(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(5)),
+          width: width,
+          height: height,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AnimatedBuilder(
+                animation: _animation,
+                builder: (BuildContext context, Widget? child) {
+                  return Text(
+                    '${_animation.value} %',
+                    style: const TextStyle(
+                        fontSize: 35,
+                        fontWeight: FontWeight.bold,
+                        color: textColor),
+                  );
+                },
+              ),
+              const Text(
+                'Текущий уровень загрузки',
+                style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
+              )
+            ],
           ),
-          Text(
-            'Текущий уровень загрузки',
-            style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
-          )
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
