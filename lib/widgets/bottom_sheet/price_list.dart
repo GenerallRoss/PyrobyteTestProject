@@ -8,13 +8,58 @@ class PriceList extends StatefulWidget {
 
   @override
   State<PriceList> createState() => _PriceListState();
+  static void checkInt() {
+    _PriceListState().checkInt();
+  }
 }
 
 class _PriceListState extends State<PriceList> {
   List<Price> price = PriceUtils.getPrice();
+  final List<bool> _firstCheck = [];
+  final List<bool> _secondCheck = [];
+  final List<TextEditingController> _firstController = [];
+  final List<TextEditingController> _secondController = [];
+
+  void checkInt() {
+    initState();
+    for (int index = 0; index < price.length; index++) {
+      if (int.tryParse(_firstController[index].text) == null) {
+        setState(() {
+          _firstCheck[index] = false;
+        });
+      }
+      if (int.tryParse(_secondController[index].text) == null) {
+        setState(() {
+          _secondCheck[index] = false;
+        });
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    for (int index = 0; index < price.length; index++) {
+      _firstCheck.add(true);
+      _secondCheck.add(true);
+      _firstController.add(TextEditingController());
+      _secondController.add(TextEditingController());
+      if (price[index].priceID.toString() != 'null') {
+        _firstController[index].text = price[index].priceID.toString();
+      } else {
+        _firstController[index].text = "";
+      }
+      if (price[index].priceCount.toString() != 'null') {
+        _secondController[index].text = price[index].priceCount.toString();
+      } else {
+        _secondController[index].text = "";
+      }
+    }
+    super.initState();
+  }
 
   @override
   Widget build(context) {
+    GlobalKey<_PriceListState> _PriceListKey = GlobalKey();
     return Column(
       children: [
         Container(
@@ -37,17 +82,17 @@ class _PriceListState extends State<PriceList> {
                                 height: 45,
                                 width: 60,
                                 child: TextFormField(
-                                    initialValue: (price[index].priceID != -1)
-                                        ? price[index].priceID.toString()
-                                        : null,
+                                    controller: _firstController[index],
                                     textInputAction: TextInputAction.next,
                                     decoration: InputDecoration(
                                         enabledBorder: OutlineInputBorder(
                                             borderRadius:
                                                 BorderRadius.circular(10),
-                                            borderSide: const BorderSide(
-                                                color: Color.fromARGB(
-                                                    204, 199, 199, 199))),
+                                            borderSide: BorderSide(
+                                                color: _firstCheck[index]
+                                                    ? const Color.fromARGB(
+                                                        204, 199, 199, 199)
+                                                    : Colors.redAccent)),
                                         border: OutlineInputBorder(
                                             borderRadius:
                                                 BorderRadius.circular(10))))),
@@ -56,34 +101,35 @@ class _PriceListState extends State<PriceList> {
                                 height: 45,
                                 width: 100,
                                 child: TextFormField(
-                                    initialValue: (price[index].priceID != -1)
-                                        ? price[index].priceCount.toString()
-                                        : null,
+                                    controller: _secondController[index],
                                     textInputAction: TextInputAction.done,
                                     decoration: InputDecoration(
                                         enabledBorder: OutlineInputBorder(
                                             borderRadius:
                                                 BorderRadius.circular(10),
-                                            borderSide: const BorderSide(
-                                                color: Color.fromARGB(
-                                                    204, 199, 199, 199))),
+                                            borderSide: BorderSide(
+                                                color: _secondCheck[index]
+                                                    ? const Color.fromARGB(
+                                                        204, 199, 199, 199)
+                                                    : Colors.redAccent)),
                                         border: OutlineInputBorder(
                                             borderRadius:
                                                 BorderRadius.circular(10))))),
                             SizedBox(
                                 width:
                                     MediaQuery.of(context).size.width * 0.35),
-                            GestureDetector(
-                              onTap: () {},
-                              child: IconButton(
-                                icon: const Icon(Icons.cancel_outlined),
-                                color: Colors.redAccent,
-                                onPressed: () {
-                                  setState(() {
-                                    price.removeAt(index);
-                                  });
-                                },
-                              ),
+                            IconButton(
+                              icon: const Icon(Icons.cancel_outlined),
+                              color: Colors.redAccent,
+                              onPressed: () {
+                                setState(() {
+                                  _firstCheck.removeAt(index);
+                                  _secondCheck.removeAt(index);
+                                  _firstController.removeAt(index);
+                                  _secondController.removeAt(index);
+                                  price.removeAt(index);
+                                });
+                              },
                             )
                           ],
                         ),
@@ -107,7 +153,13 @@ class _PriceListState extends State<PriceList> {
             child: MaterialButton(
               onPressed: () {
                 setState(() {
-                  price.add(Price(priceID: -1, priceCount: -1));
+                  _firstCheck.add(true);
+                  _secondCheck.add(true);
+                  _firstController.add(TextEditingController());
+                  _secondController.add(TextEditingController());
+                  price.add(Price.nullPrice());
+                  _firstController[price.length - 1].text = "";
+                  _secondController[price.length - 1].text = "";
                 });
               },
               child: const Text(

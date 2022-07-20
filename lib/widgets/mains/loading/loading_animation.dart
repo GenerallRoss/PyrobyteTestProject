@@ -24,7 +24,6 @@ class _LoadingAnimationState extends State<LoadingAnimation>
         vsync: this, duration: const Duration(milliseconds: 1500));
     _animation = IntTween(begin: 0, end: loadingValue).animate(CurvedAnimation(
         parent: _animationController, curve: Curves.easeInOutCirc));
-    _animationController.forward();
     startAnim();
     super.initState();
   }
@@ -32,6 +31,7 @@ class _LoadingAnimationState extends State<LoadingAnimation>
   Future startAnim() async {
     await Future.delayed(const Duration(seconds: 1));
     setState(() {
+      _animationController.forward();
       _startAnimation = !_startAnimation;
     });
   }

@@ -4,6 +4,7 @@ import 'package:test_project/values/machine_info.dart';
 import 'package:test_project/widgets/bottom_sheet/cash_input.dart';
 import 'package:test_project/widgets/bottom_sheet/changes_applied.dart';
 import 'package:test_project/widgets/bottom_sheet/price_list.dart';
+import 'package:test_project/widgets/bottom_sheet/price_list.dart' as PL;
 import 'package:test_project/widgets/bottom_sheet/use_or_dont.dart';
 
 class MyBottomSheet {
